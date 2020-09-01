@@ -22,13 +22,19 @@
 <GuiTabs>:
     id: gui_tabs
     orientation: 'horizontal'
+    tab_config: config
     tab_modes: modes
     tab_params: params
     tab_alarms: alarms
+    tab_monitoring: monitoring
 
-    Button:
-        text: 'Cancel'.upper()
-        on_press: root.tab_selected('cancel')
+    ToggleButton:
+        id: config
+        group: 'tabs'
+        state: 'normal'
+        # text: txts['alarms_alarms'].upper()
+        text: 'Config'.upper()
+        on_press: root._tab_clicked('configuration', self)
 
     Label:
         text : ''
@@ -57,6 +63,10 @@
     Label:
         text : ''
 
-    Button:
-        text: 'OK'.upper()
-        on_press: root.tab_selected('monitoring')
+    ToggleButton:
+        id: monitoring
+        group: 'tabs'
+        state: 'normal'
+        # text: txts['alarms_alarms'].upper()
+        text: 'Monitor'.upper()
+        on_press: root._tab_clicked('monitoring', self)

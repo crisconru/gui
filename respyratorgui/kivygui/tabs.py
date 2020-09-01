@@ -17,6 +17,7 @@
 # Built-in --------------------------------------------------------------------
 # Installed -------------------------------------------------------------------
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.togglebutton import ToggleButton
 from kivy.properties import StringProperty, BooleanProperty, ObjectProperty
 # Coded -----------------------------------------------------------------------
 from . import logapp, load_kv
@@ -27,10 +28,11 @@ load_kv(__file__)
 
 class GuiTabs(BoxLayout):
     tab_selected = ''
+    tab_config = ObjectProperty()
     tab_modes = ObjectProperty()
     tab_params = ObjectProperty()
     tab_alarms = ObjectProperty()
-    tab_modes_blocked = BooleanProperty(False)
+    tab_monitoring = ObjectProperty()
 
     def _tab_clicked(self, tab: str, tab_obj):
         if tab != self.tab_selected:
@@ -38,26 +40,38 @@ class GuiTabs(BoxLayout):
         else:
             tab_obj.state = 'down'
 
+    def _set_tabs(self, tab_down: ToggleButton, *tabs_normal: ToggleButton):
+        if tab_down:
+            tab_down.state = 'down'
+        for tab_normal in tabs_normal:
+            tab_normal.state = 'normal'
+
+    def tab_config_selected(self):
+        self._set_tabs(self.tab_config, self.tab_modes, self.tab_params,
+                       self.tab_alarms, self.tab_monitoring)
+        self.tab_selected = 'configuration'
+
     def tab_modes_selected(self):
-        self.tab_modes.state = 'down'
-        self.tab_params.state = 'normal'
-        self.tab_alarms.state = 'normal'
+        self._set_tabs(self.tab_modes, self.tab_config, self.tab_params,
+                       self.tab_alarms, self.tab_monitoring)
         self.tab_selected = 'modes'
 
     def tab_params_selected(self):
-        self.tab_modes.state = 'normal'
-        self.tab_params.state = 'down'
-        self.tab_alarms.state = 'normal'
+        self._set_tabs(self.tab_params, self.tab_config, self.tab_modes,
+                       self.tab_alarms, self.tab_monitoring)
         self.tab_selected = 'params'
 
     def tab_alarms_selected(self):
-        self.tab_modes.state = 'normal'
-        self.tab_params.state = 'normal'
-        self.tab_alarms.state = 'down'
+        self._set_tabs(self.tab_alarms, self.tab_config, self.tab_modes,
+                       self.tab_params, self.tab_monitoring)
         self.tab_selected = 'alarms'
 
+    def tab_monitoring_selected(self):
+        self._set_tabs(self.tab_monitoring, self.tab_config, self.tab_modes,
+                       self.tab_params, self.tab_alarms)
+        self.tab_selected = 'monitoring'
+
     def tab_nothing_selected(self):
-        self.tab_modes.state = 'normal'
-        self.tab_params.state = 'normal'
-        self.tab_alarms.state = 'normal'
+        self._set_tabs(None, self.tab_config, self.tab_modes, self.tab_params,
+                       self.tab_alarms, self.tab_monitoring)
         self.tab_selected = ''

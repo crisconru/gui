@@ -36,10 +36,14 @@ class GuiContainer(BoxLayout):
         self.block_tab_modes = False
 
     def tab_clicked(self, tab: str):
+        mode = App.get_running_app().mode
         if tab == 'modes':
             App.get_running_app().mode = ''
-        elif App.get_running_app().mode != '':
-            self.ui_params() if tab == 'params' else self.ui_alarms()
+        elif mode != '':
+            if tab == 'monitoring':
+                self.ui_monitoring()
+            else:
+                self.ui_params() if tab == 'params' else self.ui_alarms()
         else:
             self.ui_modes()
 
@@ -63,3 +67,7 @@ class GuiContainer(BoxLayout):
         alarms = App.get_running_app().alarms
         self.content.ui_alarms(alarms)
         self.tabs.tab_alarms_selected()
+
+    def ui_monitoring(self):
+        self.content.ui_monitoring()
+        self.tabs.tab_monitoring_selected()
